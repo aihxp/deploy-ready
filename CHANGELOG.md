@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.1 (2026-04-22)
+
+Documentation-only patch. SUITE.md updated to reflect the v1.0.0 release of sibling skill `observe-ready`, the shipping-tier skill that owns "keep the app healthy once it is live." No behavioral changes to deploy-ready itself. The tight coupling between the two is unchanged: deploy-ready's paper-canary rule still refuses canaries without a metric from observe-ready, and observe-ready's "uniform rollouts defeat symptom-based alerts" rule refers back to deploy-ready's rollout-strategy discipline. See [observe-ready](https://github.com/aihxp/observe-ready) for the sibling.
+
 ## v1.0.0 (2026-04-22)
 
 First stable release of deploy-ready, the shipping-tier skill that owns the pre-prod-to-prod handoff in the [ready-suite](SUITE.md). Ships with the full SKILL.md contract, ten reference files, a ~5000-word research report backing every guardrail, and full interop-standard frontmatter. Dogfooded against a realistic solo-dev Fly.io deploy before cut; the rough edges surfaced are reflected in the refinements below.
