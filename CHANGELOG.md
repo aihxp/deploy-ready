@@ -1,37 +1,44 @@
 # Changelog
 
-## v0.1.0 (2026-04-22)
+## v1.0.0 (2026-04-22)
 
-Initial pre-release of deploy-ready, the shipping-tier skill that owns the pre-prod-to-prod handoff in the [ready-suite](SUITE.md). Ships with the full SKILL.md contract, ten reference files, the research report that backs the guardrails, and full interop frontmatter. Pre-stable by convention: 0.x iterates in public until v1.0.0 is earned against real deploys.
+First stable release of deploy-ready, the shipping-tier skill that owns the pre-prod-to-prod handoff in the [ready-suite](SUITE.md). Ships with the full SKILL.md contract, ten reference files, a ~5000-word research report backing every guardrail, and full interop-standard frontmatter. Dogfooded against a realistic solo-dev Fly.io deploy before cut; the rough edges surfaced are reflected in the refinements below.
 
-### Added
+### The skill's three named failure modes
 
-- **SKILL.md** with the ready-suite interop standard: eleven frontmatter fields populated, six required sections present. Eleven-step workflow, four completion tiers, a have-nots list, a session state template, and explicit consume/produce contracts with sibling skills.
-- **Three named failure modes** the skill owns: **paper canary**, **expand-only migration trap**, and **first-deploy blindness**. See the research report for the naming-lane survey that justified each.
-- **Ten reference files** under `references/`:
+deploy-ready introduces three terms the ecosystem did not already have a clean name for. Each maps to a specific class of real-world incident (citations in [`references/RESEARCH-2026-04.md`](references/RESEARCH-2026-04.md)).
+
+- **Paper canary.** A canary without a named success metric, a numeric threshold, a time or request window, and an automated rollback trigger. Appears green because nothing is looking. Refused by the skill; not called a canary.
+- **Expand-only migration trap.** The state where the expand phase of an expand/contract migration shipped and the contract phase never did, leaving permanent dual-schema liability that compounds across future migrations. The deploy calendar and the in-progress-cycles block of `.deploy-ready/STATE.md` are the defense.
+- **First-deploy blindness.** The class of failures that happens only on the first promotion to a new environment: missing env var, unset framework prefix, IAM role that does not exist, `.env` not read at build time, platform-specific gotchas. Distinct from "works on my machine" because it affects shipping, not development.
+
+### What ships
+
+- **SKILL.md** with the ready-suite interop standard: eleven frontmatter fields populated, six required sections present. Eleven-step workflow, four completion tiers (Pipelined, Promotable, Reversible, Hardened) totaling 20 requirements, a grep-testable have-nots list, a session state template, and explicit consume/produce contracts with sibling skills.
+- **Ten reference files** under `references/`. Load-on-demand table annotates each with the step or tier that loads it.
   - `deploy-research.md`. Step 0 mode detection (A first deploy, B subsequent, C incident, D pipeline construction, E migration-dominated), destructive-command alert, expand-only migration trap detection procedure.
-  - `preflight-and-gating.md`. Expanded 10 pre-flight questions, Mode B subsequent-deploy checklist, the four gate types with pipeline-enforcement patterns.
-  - `deployment-topologies.md`. Seven topologies, per-topology first-deploy hazards and rollback characteristics, mixed-topology worked examples.
-  - `pipeline-patterns.md`. The 8 pipeline gates with good and bad GitHub Actions YAML, same-artifact invariant, supply-chain pitfalls including the `pull_request_target` footgun.
-  - `environment-parity.md`. The four parity gaps (time, personnel, tooling, fidelity), per-rung parity table, pre-prod parity gap as a named concept.
-  - `first-deploy-checklist.md`. Eleven cold-start gates, per-platform gotchas (Vercel, Netlify, Fly.io, Cloud Run, Lambda, Kubernetes), dry-run rollback procedure, printable checklist.
-  - `zero-downtime-migrations.md`. Expand/migrate/cutover/contract calendar, 10-pattern guardrail catalog with unsafe and safe SQL per pattern, worked 3-deploy column rename, expand-only migration trap deep dive.
-  - `rollback-playbook.md`. Code-vs-data rollback asymmetry, compensating-forward patterns, Knight Capital flag-lineage discipline, destructive-command gate grounded in Replit and DataTalks.Club incidents, incident log template.
-  - `progressive-delivery.md`. Five rollout strategies, paper-canary rule with four required fields, blast-radius rule citing CrowdStrike / Cloudflare 2019 / Facebook 2021, readiness probe discipline.
-  - `secrets-injection.md`. Per-topology injection patterns, Docker layer leak class, `pull_request_target` surface, build-time vs runtime split, artifact-level audit commands.
-- **Research report** (`references/RESEARCH-2026-04.md`, ~5000 words). Named incidents (Knight Capital, GitLab 2017, AWS S3 2017, Cloudflare 2019, Facebook 2021, CrowdStrike 2024, Replit 2025, DataTalks.Club 2025, timescale/pgai 2025, Docker Hub leaks), tool gap analysis (GitHub Actions, GitOps, progressive-delivery vendors, platform-native CD), zero-downtime migration literature survey, naming-lane analysis, DORA 2024 / Stack Overflow 2024-2025 / GitGuardian 2026 quantitative framing.
-- **SUITE.md** at repo root, listing deploy-ready alongside the three live siblings (production-ready 2.5.1, repo-ready, stack-ready 1.1.0) and the five planned skills.
-- **README.md** with install paths for Claude Code, Codex, Cursor, and Windsurf; the "what this skill prevents" incident-to-enforcement mapping; and the reference-library index.
+  - `preflight-and-gating.md`. 10 pre-flight questions expanded, Mode B subsequent-deploy checklist, the four gate types (build, test, security, approval) with pipeline-enforcement patterns across GitHub Actions, GitLab CI, Argo CD, Flux, Jenkins.
+  - `deployment-topologies.md`. Seven topologies, per-topology first-deploy hazards and rollback characteristics, mixed-topology worked examples (Vercel + Neon, Fly.io, Cloud Run, Lambda + DynamoDB + CloudFront).
+  - `pipeline-patterns.md`. The 8 pipeline gates with good and bad GitHub Actions YAML, same-artifact enforcement via content hashing and registry-tag promotion, the supply-chain pitfalls including `pull_request_target` fork-RCE.
+  - `environment-parity.md`. The four parity gaps (time, personnel, tooling, fidelity), per-rung parity table, pre-prod parity gap as a named concept, quarterly drift audit.
+  - `first-deploy-checklist.md`. Eleven cold-start gates, per-platform gotchas for Vercel, Netlify, Fly.io, Cloud Run, Lambda, Kubernetes; dry-run rollback procedure.
+  - `zero-downtime-migrations.md`. Expand/migrate/cutover/contract calendar, 10-pattern guardrail catalog with unsafe and safe SQL per pattern, worked 3-deploy column rename across 2 weeks, expand-only migration trap deep dive.
+  - `rollback-playbook.md`. Code-vs-data rollback asymmetry, compensating-forward patterns with worked examples, Knight Capital flag-lineage discipline, destructive-command gate grounded in the Replit 2025 and DataTalks.Club 2025 incidents, incident log template.
+  - `progressive-delivery.md`. Five rollout strategies, paper-canary rule with four required fields, blast-radius rule citing CrowdStrike 2024, Cloudflare 2019, Facebook BGP 2021, readiness probe discipline, `preStop` graceful-shutdown pattern.
+  - `secrets-injection.md`. Per-topology injection patterns, Docker layer leak class (Truffle Security, GitGuardian, Intrinsec citations), `pull_request_target` surface, build-time vs runtime split, artifact-level audit commands.
+- **Research report** (`references/RESEARCH-2026-04.md`, ~5000 words). Named incidents: Knight Capital 2012, GitLab 2017, AWS S3 us-east-1 2017, Cloudflare WAF 2019, Facebook BGP 2021, CrowdStrike Channel File 291 2024, Replit 2025, DataTalks.Club 2025, timescale/pgai 2025, Docker Hub 10k-image secret-leak class. Tool gap analysis across GitHub Actions, GitLab CI, Argo CD, Flux, Argo Rollouts, LaunchDarkly, Vercel, Netlify, Fly.io. Zero-downtime migration literature survey. Naming-lane analysis. DORA 2024 (7.2% stability drop from AI-assisted delivery), Stack Overflow 2024-2025 (trust-gap framing), GitGuardian 2026 (2x AI-commit secret-leak rate) quantitative framing.
+- **SUITE.md** at repo root listing deploy-ready at 1.0.0 alongside production-ready 2.5.2 and stack-ready 1.1.1 (sibling copies bumped as patches on this release).
+- **README.md** with install paths for Claude Code, Codex, Cursor, Windsurf; the "what this skill prevents" incident-to-enforcement mapping across 12 incidents and findings; reference-library index; named-terms section.
 
-### Why 0.1.0, not 1.0.0
+### Refinements from the dogfood walk
 
-Pre-stable iteration is the suite convention (stack-ready's pattern). The skill ships with a complete contract but has not yet been exercised against a real production deploy end-to-end. v1.0.0 is earned against a real cut-over, not declared at initial release. Expect minor bumps during 0.x as rough edges surface on real use.
+A pre-release paper walk against a realistic solo-dev Fly.io deploy scenario (Node API with a `deleted_at` column add) surfaced four rough edges. All addressed in v1.0.0:
 
-### Known gaps (to be closed before v1.0.0)
-
-- No sample `.deploy-ready/` artifact set from a real deploy. STATE.md and PLAN.md templates are prose-only until the first dogfood run.
-- No Kubernetes-native reference guidance yet (the topology is covered but deep K8s operator and service mesh patterns are light).
-- Progressive-delivery guidance biases toward Argo Rollouts and LaunchDarkly; Flagger and Unleash get named but not deep examples.
+- **Same-artifact promotion scope clarified.** The invariant applies to *logical* environments (dev, staging, canary, prod). Platform-native region replication and per-region image rebuilds (Fly.io, Cloud Run, Vercel edge) are not drift if the source commit and build configuration are pinned; the artifact-path note records the pin.
+- **Compact ladder profile named.** The skill does not force a staging rung where one does not exist. A dev-to-prod or dev-to-preview-to-prod ladder is declared as a "compact ladder" and the parity compensations are documented in Step 3. What is forced is that the parity gap is visible, not that a particular rung exists.
+- **Solo-dev approval exception.** On single-maintainer projects, the approval gate is a distinct second action (signed tag push, deploy command invocation, deploy-marker commit merge) separate from the build step. A pipeline that auto-deploys on push to main with no distinct second action fails the gate even solo, because the whole point of the gate is that shipping is a choice.
+- **Expand-only-by-design recognized.** Some changes are legitimately expand-only (permanent nullable columns, never-removed enum values, coexisting-forever tables). The calendar records "expand: v1.x. contract: none, by design. reason: <one line>." An absent contract phase is a trap only when deferred and forgotten, not when designed out.
+- **Blast-radius exemption for all-at-once prod.** All-at-once is acceptable for low-traffic prod services with a named blast-radius justification (user count under threshold, internal-only audience, solo-maintained). Broad user-facing changes still require a non-uniform strategy; the difference is the plan now has to name which context applies.
 
 ### Compatibility
 
@@ -40,3 +47,11 @@ Pre-stable iteration is the suite convention (stack-ready's pattern). The skill 
 - Cursor
 - Windsurf (manual SKILL.md upload)
 - Any agent with skill loading
+
+### Suite siblings at release
+
+- production-ready 2.5.2 (patch bumped for SUITE.md table update)
+- stack-ready 1.1.1 (patch bumped for SUITE.md table update)
+- repo-ready (live, see its own CHANGELOG)
+
+Planned siblings (not yet released): prd-ready, architecture-ready, roadmap-ready, observe-ready, launch-ready.

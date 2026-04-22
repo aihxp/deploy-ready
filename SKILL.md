@@ -1,7 +1,7 @@
 ---
 name: deploy-ready
 description: "Ship an app from a known-green build into real user-facing environments safely, repeatably, and reversibly. Triggers on 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'progressive rollout,' 'first deploy,' 'environment parity,' 'GitHub Actions pipeline,' 'GitOps,' 'promote the same artifact,' or any request to move code from pre-prod to prod. Enforces same-artifact promotion, expand/contract as a multi-deploy calendar, code-vs-data rollback asymmetry, and paper-canary detection. Does not pick IaC tools (stack-ready), wire observability (observe-ready), or manage secrets vaults (security). Pairs with observe-ready. Full trigger list in README."
-version: 0.1.0
+version: 1.0.0
 updated: 2026-04-22
 changelog: CHANGELOG.md
 suite: ready-suite
@@ -96,8 +96,8 @@ Produce a short note (6 to 15 lines) covering:
 - **Topology.** One of: static, container, serverless function, long-running service, edge/worker, scheduled job, mixed. Reference `deployment-topologies.md` for the picker and the per-topology first-deploy hazards.
 - **Environments.** Named list with their purpose. Typical: `dev`, `preview` (per-PR), `staging`, `canary`, `prod`. Mark which are persistent and which are ephemeral.
 - **Artifact type.** Docker image, static bundle, serverless package, deb/rpm, compiled binary, or framework-native build output.
-- **Artifact path.** Where it is built, where it is stored, how it moves between environments. This is the same-artifact invariant in writing.
-- **Promotion hierarchy.** The ordered path from build to prod. Every step named.
+- **Artifact path.** Where it is built, where it is stored, how it moves between environments. This is the same-artifact invariant in writing. The invariant applies to *logical* environments (dev, staging, canary, prod). Platform-native region replication or per-region image rebuilds (Fly.io, Cloud Run, Vercel edge) are not drift if the source commit and build configuration are pinned; record the pin in the artifact path note.
+- **Promotion hierarchy.** The ordered path from build to prod. Every step named. If the promotion ladder is compact (dev -> prod only, or dev -> preview -> prod), declare it as a **compact ladder** and document the parity compensations in Step 3. The skill does not force a staging rung where one does not exist; it forces the parity gap to be visible.
 - **Runtime dependencies.** Secrets, env vars, DNS entries, certs, IAM roles, database connectivity, cache layer, queue, third-party APIs. Each marked "exists in target" or "must be provisioned."
 
 **Mode B (subsequent) shortcut:** quote the note from the last successful deploy and mark only the delta.
@@ -131,7 +131,7 @@ Required gate list, in order:
 3. **Security.** Image scan, dependency audit, secret scan on the artifact itself (not just the source). See `secrets-injection.md` for the per-topology scan list.
 4. **Promote to first non-prod env.** Same-artifact. Smoke-check the deployment, not just the HTTP 200.
 5. **Promote to staging.** Same-artifact. Run the pre-deploy checklist for staging.
-6. **Approval gate.** Explicit, named, enforced by the pipeline (environment protection rule, approval step), not by convention.
+6. **Approval gate.** Explicit, named, enforced by the pipeline (environment protection rule, approval step), not by convention. **Solo-dev exception:** on single-maintainer projects, the approval is a distinct second action the maintainer performs (push a signed tag, invoke the deploy command, merge a deploy-marker commit) separate from the build step. A pipeline that auto-deploys on push to main with no distinct second action does not clear this gate even for solo projects; the whole point of the gate is that shipping is a choice, not a side effect of committing.
 7. **Promote to prod.** Same-artifact. Rollout per Step 7.
 8. **Post-deploy verification.** Step 11.
 
@@ -174,6 +174,8 @@ For every schema change, decompose into phases:
 
 Each phase is its own deploy. The contract phase ships at a later calendar point; it never rides the same deploy as the expand phase.
 
+**Expand-only-by-design.** Some changes are legitimately expand-only: adding a permanently-nullable audit column, adding a new enum value that will never be removed, adding a new table that coexists forever with its predecessor. In that case the calendar entry is explicit: "expand: v1.12.0 (2026-04-22). contract: none, by design. reason: <one line>." An absent contract phase is only a trap when it was deferred and forgotten; it is not a trap when it was designed out. The STATE.md in-progress cycles block must still record this so future agents do not re-invent a contract step that was never intended.
+
 Guardrails applied to any proposed migration (catch list, not exhaustive, see `zero-downtime-migrations.md` for the full list):
 
 - No `ALTER COLUMN` type change on a populated table without the expand-migrate-cutover-contract decomposition.
@@ -192,7 +194,7 @@ Read `references/progressive-delivery.md`. Pick one rollout strategy per change,
 
 Options:
 
-- **All-at-once.** The simplest. Ship to 100% of the target at one time. Acceptable for: small staging fleets, isolated internal tools, hotfixes to config where the alternative is worse. Not acceptable for prod user-facing changes.
+- **All-at-once.** The simplest. Ship to 100% of the target at one time. Acceptable for: small staging fleets, isolated internal tools, hotfixes to config where the alternative is worse, and low-traffic prod services where the blast radius is explicitly bounded (named user count under threshold, internal-only audience, or solo-maintained app). Not acceptable for broad user-facing changes without a named blast-radius justification recorded in the plan.
 - **Rolling update.** The default for long-running services. New pods roll in, old pods roll out, readiness probes gate the rollover. Requires a truthful readiness probe (not a 200 as soon as the HTTP server binds).
 - **Blue/green.** Two parallel fleets, traffic shift at the load balancer. Faster rollback; double the capacity during the cutover.
 - **Canary.** Percentage of traffic routed to the new version, with a *defined success metric, threshold, window, and automated rollback action*.
@@ -323,7 +325,7 @@ Every change has a classified rollback or compensating-forward path. Migrations 
 |---|---|
 | 11 | **Every change classified.** Reversible, data-forward, mixed, or side-effectful per Step 5. No unclassified change ships. |
 | 12 | **Rollback path rehearsed.** For reversible changes, the revert command has been run against a non-prod copy within the last 90 days. |
-| 13 | **Expand/contract decomposed.** Every data-forward change has a named expand phase, cutover phase, and contract phase on the deploy calendar. Expand and contract are not the same ship. |
+| 13 | **Expand/contract decomposed.** Every data-forward change has a named expand phase, cutover phase, and contract phase on the deploy calendar, or is explicitly marked expand-only-by-design with a one-line reason. Expand and contract are never the same ship. |
 | 14 | **Migration guardrails pass.** No destructive DDL without a restore point, no `NOT NULL` in one step, no non-concurrent index on a live table, no rename-then-read, no in-transaction backfill, no missing `lock_timeout`. |
 | 15 | **Feature-flag lineage checked.** No flag name is reused from a prior deploy without an audit that the old code path is fully removed (Knight Capital lesson). |
 
@@ -447,7 +449,7 @@ Maintain `.deploy-ready/STATE.md` at every deploy boundary. Read it first on res
 # Deploy-Ready State
 
 ## Skill version
-Built under deploy-ready 0.1.0, 2026-04-22. If the agent loads a newer version on resume, re-read the changed sections before the next ship.
+Built under deploy-ready 1.0.0, 2026-04-22. If the agent loads a newer version on resume, re-read the changed sections before the next ship.
 
 ## Environments in play
 | Env | Purpose | Last ship | Current version | Health |
