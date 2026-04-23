@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.4 (2026-04-23)
+
+Documentation-only patch. Reflects the arrival of `prd-ready` v1.0.0 (https://github.com/aihxp/prd-ready) as a live sibling in the ready-suite. This release completes the top of the planning tier: prd-ready defines WHAT we are building, upstream of architecture-ready (HOW), roadmap-ready (WHEN), and stack-ready (WITH WHAT TOOLS). No behavioral changes to the skill.
+
+### Changed
+
+- **`SUITE.md`** updated to list prd-ready at 1.0.0 alongside production-ready 2.5.6, repo-ready 1.6.2, stack-ready 1.1.5, deploy-ready 1.0.4, observe-ready 1.0.3, and launch-ready 1.0.1. Copy remains byte-identical across every live sibling.
+- **SKILL.md frontmatter version** bumped to 1.0.4. No content change beyond the version tag.
+
 ## v1.0.3 (2026-04-23)
 
 Documentation-only patch. SUITE.md updated to reflect the v1.0.0 release of sibling skill `launch-ready`, the shipping-tier skill that owns "tell the world the product exists." This release completes the shipping tier. No behavioral changes to deploy-ready itself. The coupling with launch-ready: a launch should not ship on top of an in-progress expand/contract migration, so launch-ready reads `.deploy-ready/STATE.md` and blocks the launch-day drop on a non-green deploy state. deploy-ready's existing artifact contract (STATE.md, TOPOLOGY.md, healthchecks.md) is unchanged. See [launch-ready](https://github.com/aihxp/launch-ready) for the sibling.
