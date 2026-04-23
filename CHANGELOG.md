@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.5 (2026-04-23)
+
+Documentation-only patch. Reflects the arrival of `architecture-ready` v1.0.0 (https://github.com/aihxp/architecture-ready) as a live sibling in the ready-suite. architecture-ready is a new planning-tier sibling; deploy-ready now reads architecture-ready's deployment topology and system-shape signals upstream via production-ready. No behavioral changes to the skill.
+
+### Changed
+
+- **`SUITE.md`** updated to list architecture-ready at 1.0.0. Every sibling's recorded version is bumped one patch to track the release. Copy remains byte-identical across every live sibling.
+- **SKILL.md frontmatter version** bumped to 1.0.5. No content change beyond the version tag.
+
 ## v1.0.4 (2026-04-23)
 
 Documentation-only patch. Reflects the arrival of `prd-ready` v1.0.0 (https://github.com/aihxp/prd-ready) as a live sibling in the ready-suite. This release completes the top of the planning tier: prd-ready defines WHAT we are building, upstream of architecture-ready (HOW), roadmap-ready (WHEN), and stack-ready (WITH WHAT TOOLS). No behavioral changes to the skill.
