@@ -4,7 +4,7 @@ A composable set of AI skills covering the full arc from idea to launch. Each sk
 
 This file is byte-identical across every skill in the suite. If you installed one skill, you can see the whole map here.
 
-## The nine skills, three tiers
+## The ten skills, three tiers
 
 ```
 PLANNING TIER                     BUILDING TIER                  SHIPPING TIER
@@ -12,7 +12,7 @@ PLANNING TIER                     BUILDING TIER                  SHIPPING TIER
 prd-ready           ->            repo-ready          ->         deploy-ready
 architecture-ready  ->            production-ready    ->         observe-ready
 roadmap-ready       ->                                ->         launch-ready
-stack-ready         ->
+stack-ready         ->                                ->         harden-ready
 ```
 
 ## What each skill owns
@@ -28,12 +28,16 @@ stack-ready         ->
 | **deploy-ready** | Shipping | Ship the app to real environments. | "deploy this," "CI/CD pipeline," "zero-downtime migration," "rollback" |
 | **observe-ready** | Shipping | Keep the app healthy once it's live. | "add monitoring," "Datadog," "alerts when X," "SLO," "runbook" |
 | **launch-ready** | Shipping | Tell the world the product exists. | "launch my product," "build a landing page," "SEO," "Product Hunt" |
+| **harden-ready** | Shipping | Survive adversarial attention; prove it to an auditor. | "adversarial review," "pen-test prep," "OWASP Top 10 walkthrough," "SOC 2 / HIPAA / PCI-DSS gap check," "responsible disclosure program," "post-incident hardening" |
 
 ## Dependency flow
 
 ```
 PRD -> Architecture -> Roadmap -> Stack -> (Repo || Production) -> Deploy -> Observe -> Launch
+                                                                                     -> Harden
 ```
+
+harden-ready runs at the shipping tier alongside deploy-ready, observe-ready, and launch-ready. It consumes the architecture trust boundaries, the production-ready threat model and RBAC matrix, the deploy-ready environment list, and the observe-ready alert catalog; it produces a findings-and-fix-plan artifact consumed by humans (security engineers, auditors, founders pre-launch), not by another suite skill.
 
 Skills consume artifacts from upstream siblings and produce artifacts for downstream siblings. The handshake is documented per skill under "Consumes from upstream" and "Produces for downstream." Each skill degrades gracefully when upstream artifacts are missing: it falls back to its own defaults.
 
@@ -60,20 +64,21 @@ Every skill installs the same way on every platform. On a machine where the dev 
 
 ## Why a ready suite at all
 
-AI-generated apps fail in predictable ways: hollow buttons, placeholder READMEs, missing CI, unshipped half-migrations, unmonitored production. One giant skill covering everything becomes unfocused and bloats past the point of usefulness. Separate tight skills composing through explicit handoffs stays sharp.
+AI-generated apps fail in predictable ways: hollow buttons, placeholder READMEs, missing CI, unshipped half-migrations, unmonitored production, silent launches, and security surfaces that pass SAST/SCA and fail adversarial review. One giant skill covering everything becomes unfocused and bloats past the point of usefulness. Separate tight skills composing through explicit handoffs stays sharp.
 
 ## Known-good versions
 
 | Skill | Current version | Repo |
 |---|---|---|
-| **production-ready** | 2.5.8 | https://github.com/aihxp/production-ready |
-| **repo-ready** | 1.6.4 | https://github.com/aihxp/repo-ready |
-| **stack-ready** | 1.1.7 | https://github.com/aihxp/stack-ready |
-| **deploy-ready** | 1.0.6 | https://github.com/aihxp/deploy-ready |
-| **observe-ready** | 1.0.5 | https://github.com/aihxp/observe-ready |
-| **launch-ready** | 1.0.3 | https://github.com/aihxp/launch-ready |
-| **prd-ready** | 1.0.2 | https://github.com/aihxp/prd-ready |
-| **architecture-ready** | 1.0.1 | https://github.com/aihxp/architecture-ready |
-| **roadmap-ready** | 1.0.0 | https://github.com/aihxp/roadmap-ready |
+| **production-ready** | 2.5.9 | https://github.com/aihxp/production-ready |
+| **repo-ready** | 1.6.5 | https://github.com/aihxp/repo-ready |
+| **stack-ready** | 1.1.8 | https://github.com/aihxp/stack-ready |
+| **deploy-ready** | 1.0.7 | https://github.com/aihxp/deploy-ready |
+| **observe-ready** | 1.0.6 | https://github.com/aihxp/observe-ready |
+| **launch-ready** | 1.0.4 | https://github.com/aihxp/launch-ready |
+| **prd-ready** | 1.0.3 | https://github.com/aihxp/prd-ready |
+| **architecture-ready** | 1.0.2 | https://github.com/aihxp/architecture-ready |
+| **roadmap-ready** | 1.0.1 | https://github.com/aihxp/roadmap-ready |
+| **harden-ready** | 1.0.0 | https://github.com/aihxp/harden-ready |
 
-The suite is additive. A skill not yet released does not block any other skill from functioning. When a skill reaches v1.0.0, update this table and ship the change across all installed siblings.
+The suite is additive. A skill not yet released does not block any other skill from functioning. When a skill reaches v1.0.0, update this table and ship the change across all installed siblings. With harden-ready v1.0.0 the core suite is complete: ten skills across planning (four), building (two), and shipping (four).
