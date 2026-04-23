@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.2 (2026-04-23)
+
+Documentation-only patch. Reflects the arrival of repo-ready v1.6.0 as a live sibling in the ready-suite with its suite-membership retrofit (frontmatter interop fields, SUITE.md, Unicode cleanup). No behavioral changes to the skill.
+
+### Changed
+
+- **SUITE.md known-good versions table** updated: repo-ready now shows version 1.6.0 and its repo URL instead of "See its CHANGELOG."
+- **SKILL.md frontmatter version** bumped to 1.0.2. No content change beyond the version tag.
+
 ## v1.0.1 (2026-04-22)
 
 Documentation-only patch. SUITE.md updated to reflect the v1.0.0 release of sibling skill `observe-ready`, the shipping-tier skill that owns "keep the app healthy once it is live." No behavioral changes to deploy-ready itself. The tight coupling between the two is unchanged: deploy-ready's paper-canary rule still refuses canaries without a metric from observe-ready, and observe-ready's "uniform rollouts defeat symptom-based alerts" rule refers back to deploy-ready's rollout-strategy discipline. See [observe-ready](https://github.com/aihxp/observe-ready) for the sibling.
