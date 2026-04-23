@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.3 (2026-04-23)
+
+Documentation-only patch. SUITE.md updated to reflect the v1.0.0 release of sibling skill `launch-ready`, the shipping-tier skill that owns "tell the world the product exists." This release completes the shipping tier. No behavioral changes to deploy-ready itself. The coupling with launch-ready: a launch should not ship on top of an in-progress expand/contract migration, so launch-ready reads `.deploy-ready/STATE.md` and blocks the launch-day drop on a non-green deploy state. deploy-ready's existing artifact contract (STATE.md, TOPOLOGY.md, healthchecks.md) is unchanged. See [launch-ready](https://github.com/aihxp/launch-ready) for the sibling.
+
 ## v1.0.2 (2026-04-23)
 
 Documentation-only patch. Reflects the arrival of repo-ready v1.6.0 as a live sibling in the ready-suite with its suite-membership retrofit (frontmatter interop fields, SUITE.md, Unicode cleanup). No behavioral changes to the skill.
