@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.0.8 (2026-04-24)
+
+Documentation-only patch. Suite-wide SUITE.md refresh introducing the canonical dogfood target: [aihxp/mirror-box](https://github.com/aihxp/mirror-box). Adds a new "Canonical dogfood target" section to SUITE.md with links to the ten per-skill dogfood artifacts. Adds composition principle #7 codifying the byte-identical-SUITE.md invariant across siblings. No behavioral changes to the skill.
+
+### Changed
+
+- **SUITE.md**: new "Canonical dogfood target: Mirror Box" section with artifact links.
+- **SUITE.md**: composition principles now include #7 (byte-identical SUITE.md across siblings).
+- **SUITE.md**: version table bumped; all ten skills reflect the coordinated sync.
+
+### Why a patch, not a minor
+
+Same rationale as prior x.y.z patches: the skill's behavior, frontmatter contract, and reference library are unchanged. Only the cross-sibling SUITE.md is touched. Per the suite versioning discipline, patch-level is the honest bucket for documentary-only sibling-ship tracking.
+
 ## v1.0.7 (2026-04-23)
 
 Documentation-only patch. Reflects the arrival of `harden-ready` v1.0.0 (https://github.com/aihxp/harden-ready) as a live sibling in the ready-suite. harden-ready is the tenth and final core-suite skill; its v1.0.0 release completes the shipping tier alongside deploy-ready, observe-ready, and launch-ready, and completes the ready-suite across planning (four), building (two), and shipping (four) tiers. harden-ready owns post-deploy adversarial review, OWASP Top 10 walkthroughs (Web / API / LLM), compliance control-to-code mapping (SOC 2 / HIPAA / PCI-DSS / GDPR), pen-test preparation and retest discipline, responsible-disclosure program design beyond SECURITY.md, and class-not-instance post-incident hardening. No behavioral changes to this skill.
