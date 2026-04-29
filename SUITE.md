@@ -41,16 +41,6 @@ harden-ready runs at the shipping tier alongside deploy-ready, observe-ready, an
 
 Skills consume artifacts from upstream siblings and produce artifacts for downstream siblings. The handshake is documented per skill under "Consumes from upstream" and "Produces for downstream." Each skill degrades gracefully when upstream artifacts are missing: it falls back to its own defaults.
 
-## Canonical dogfood target: Mirror Box
-
-The ready-suite ships a single reference implementation that every skill has a dogfood artifact against: [aihxp/mirror-box](https://github.com/aihxp/mirror-box). Mirror Box is a tiny traced HTTP echo service (Fastify + OTel SDK + OTLP/gRPC to Honeycomb, deployable to Fly.io free tier) intentionally small enough that the full nine-skill arc fits on a single page at each step.
-
-- Planning-tier artifacts: [PRD.md](https://github.com/aihxp/prd-ready/blob/main/dogfood/PRD.md), [ARCH.md](https://github.com/aihxp/architecture-ready/blob/main/dogfood/ARCH.md), [ROADMAP.md](https://github.com/aihxp/roadmap-ready/blob/main/dogfood/ROADMAP.md), [DECISION.md](https://github.com/aihxp/stack-ready/blob/main/dogfood/DECISION.md).
-- Building-tier artifacts: [HYGIENE.md](https://github.com/aihxp/repo-ready/blob/main/dogfood/HYGIENE.md), [SLICES.md](https://github.com/aihxp/production-ready/blob/main/dogfood/SLICES.md).
-- Shipping-tier artifacts: [CUTOVER.md](https://github.com/aihxp/deploy-ready/blob/main/dogfood/CUTOVER.md), [OBSERVABILITY.md](https://github.com/aihxp/observe-ready/blob/main/dogfood/OBSERVABILITY.md), [N-A.md](https://github.com/aihxp/launch-ready/blob/main/dogfood/N-A.md) (launch correctly N/A), [FINDINGS.md](https://github.com/aihxp/harden-ready/blob/main/dogfood/FINDINGS.md).
-
-See [VALIDATION.md](https://github.com/aihxp/production-ready/blob/main/VALIDATION.md) for the suite-level end-to-end validation report, including the gap that these artifacts closed.
-
 ## Install locations
 
 Every skill installs the same way on every platform. On a machine where the dev copy lives at `~/Projects/<skill-name>/`, symlinking is recommended so updates in the dev copy propagate instantly.
@@ -81,15 +71,15 @@ AI-generated apps fail in predictable ways: hollow buttons, placeholder READMEs,
 
 | Skill | Current version | Repo |
 |---|---|---|
-| **production-ready** | 2.5.10 | https://github.com/aihxp/production-ready |
-| **repo-ready** | 1.6.6 | https://github.com/aihxp/repo-ready |
-| **stack-ready** | 1.1.9 | https://github.com/aihxp/stack-ready |
-| **deploy-ready** | 1.0.8 | https://github.com/aihxp/deploy-ready |
-| **observe-ready** | 1.0.7 | https://github.com/aihxp/observe-ready |
-| **launch-ready** | 1.0.5 | https://github.com/aihxp/launch-ready |
-| **prd-ready** | 1.0.4 | https://github.com/aihxp/prd-ready |
-| **architecture-ready** | 1.0.3 | https://github.com/aihxp/architecture-ready |
-| **roadmap-ready** | 1.0.2 | https://github.com/aihxp/roadmap-ready |
-| **harden-ready** | 1.0.1 | https://github.com/aihxp/harden-ready |
+| **production-ready** | 2.5.11 | https://github.com/aihxp/production-ready |
+| **repo-ready** | 1.6.7 | https://github.com/aihxp/repo-ready |
+| **stack-ready** | 1.1.10 | https://github.com/aihxp/stack-ready |
+| **deploy-ready** | 1.0.9 | https://github.com/aihxp/deploy-ready |
+| **observe-ready** | 1.0.8 | https://github.com/aihxp/observe-ready |
+| **launch-ready** | 1.0.6 | https://github.com/aihxp/launch-ready |
+| **prd-ready** | 1.0.5 | https://github.com/aihxp/prd-ready |
+| **architecture-ready** | 1.0.4 | https://github.com/aihxp/architecture-ready |
+| **roadmap-ready** | 1.0.3 | https://github.com/aihxp/roadmap-ready |
+| **harden-ready** | 1.0.2 | https://github.com/aihxp/harden-ready |
 
-The suite is additive. A skill not yet released does not block any other skill from functioning. When a skill reaches v1.0.0, update this table and ship the change across all installed siblings. With harden-ready v1.0.0 the core suite is complete: ten skills across planning (four), building (two), and shipping (four). Mirror Box ([aihxp/mirror-box](https://github.com/aihxp/mirror-box)) is the canonical dogfood target every skill has an artifact against.
+The suite is additive. A skill not yet released does not block any other skill from functioning. When a skill reaches v1.0.0, update this table and ship the change across all installed siblings. With harden-ready v1.0.0 the core suite is complete: ten skills across planning (four), building (two), and shipping (four).
